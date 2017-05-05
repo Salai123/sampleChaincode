@@ -72,7 +72,6 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 
 	return nil, errors.New("Received unknown function query: " + function)
 }
-
 // write - invoke function to write key/value pair
 func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, value string
@@ -94,8 +93,9 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 
 // read - query function to read key/value pair
 func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string,) ([]byte, error) {
-	var key1,key2, jsonResp string
-	var err1,err2 error
+	var key1, key2,jsonResp string
+	var err error
+            
 
 	if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. Expecting name of the key to query")
@@ -103,17 +103,19 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string,)
 
 	key1 = args[0]
                   key2 = args[1]
-	valAsbytes, err1 := stub.GetState(key1)
-                  valBsbytes, err2 := stub.GetState(key2)
-	if err1 != nil {
+                  
+                 
+	valAsbytes,err := stub.GetState(key1)
+                  valBsbytes,err :=  stub.GetState(key2)
+          
+	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + key1 + "\"}"
 		return nil, errors.New(jsonResp)
 	}
-                  if err2 != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + key2 + "\"}"
-		return nil, errors.New(jsonResp)
-	}
+                  
+                  fmt.Printf("Value of key A is  %s",valAsbytes)
+                  fmt.Printf("Value of key B is  %s",valBsbytes)
 
 	return valAsbytes,nil
-                  return valBsbytes,nil
+             
 }
